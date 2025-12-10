@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: staging
   source:
     repoURL: https://github.com/sumitroajiprabowo/window-door-sensor-tuya.git
     targetRevision: staging  # Or use a specific tag/commit

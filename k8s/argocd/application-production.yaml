@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: production
   source:
     repoURL: https://github.com/sumitroajiprabowo/window-door-sensor-tuya.git
     targetRevision: main  # Production uses main/master branch or release tags

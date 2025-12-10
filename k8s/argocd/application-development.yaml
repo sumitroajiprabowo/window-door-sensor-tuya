@@ -6,10 +6,10 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: development
   source:
     repoURL: https://github.com/sumitroajiprabowo/window-door-sensor-tuya.git
-    targetRevision: develop  # Or 'HEAD' for main branch
+    targetRevision: development  # Or 'HEAD' for main branch
     path: k8s/overlays/development
   destination:
     server: https://kubernetes.default.svc

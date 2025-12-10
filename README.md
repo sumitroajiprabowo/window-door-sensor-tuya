@@ -307,4 +307,4 @@ make clean           # Clean build artifacts
 
 ## License
 
-[MIT](LICENSE)
+[Apache License](LICENSE)
