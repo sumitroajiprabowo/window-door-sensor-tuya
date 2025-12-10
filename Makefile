@@ -41,7 +41,7 @@ lint:
 
 # Format code with black
 format:
-	.venv/bin/python -m black . --line-length 100
+	.venv/bin/python -m black .
 
 # Clean up temporary files and caches
 clean:
