@@ -16,7 +16,9 @@ class TestDoorSensorPollerInit:
 
     @patch("services.polling_service.TuyaConfig")
     @patch("services.polling_service.Config")
-    def test_poller_init_default_poll_interval(self, mock_config, mock_tuya_config, mock_env_vars):
+    def test_poller_init_default_poll_interval(
+        self, mock_config, mock_tuya_config, mock_env_vars
+    ):
         """Test that default poll interval is used from Config."""
         mock_config.POLL_INTERVAL = 5
 
@@ -112,7 +114,10 @@ class TestDoorSensorPollerPollLoop:
         self, mock_tuya_config, mock_sleep, mock_tuya_service, mock_env_vars
     ):
         """Test that poll loop sleeps for poll_interval between iterations."""
-        mock_tuya_service.get_device_status.return_value = {"success": True, "result": []}
+        mock_tuya_service.get_device_status.return_value = {
+            "success": True,
+            "result": [],
+        }
 
         from services.polling_service import DoorSensorPoller
 
@@ -272,10 +277,18 @@ class TestDoorSensorPollerPollLoop:
     @patch("services.polling_service.logging")
     @patch("services.polling_service.TuyaConfig")
     def test_poll_loop_handles_api_failure(
-        self, mock_tuya_config, mock_logging, mock_sleep, mock_tuya_service, mock_env_vars
+        self,
+        mock_tuya_config,
+        mock_logging,
+        mock_sleep,
+        mock_tuya_service,
+        mock_env_vars,
     ):
         """Test that poll loop handles API failure gracefully."""
-        mock_tuya_service.get_device_status.return_value = {"success": False, "msg": "API error"}
+        mock_tuya_service.get_device_status.return_value = {
+            "success": False,
+            "msg": "API error",
+        }
 
         from services.polling_service import DoorSensorPoller
 
@@ -297,7 +310,12 @@ class TestDoorSensorPollerPollLoop:
     @patch("services.polling_service.logging")
     @patch("services.polling_service.TuyaConfig")
     def test_poll_loop_handles_exception(
-        self, mock_tuya_config, mock_logging, mock_sleep, mock_tuya_service, mock_env_vars
+        self,
+        mock_tuya_config,
+        mock_logging,
+        mock_sleep,
+        mock_tuya_service,
+        mock_env_vars,
     ):
         """Test that poll loop handles exceptions gracefully."""
         mock_tuya_service.get_device_status.side_effect = Exception("Network error")
@@ -338,7 +356,9 @@ class TestDoorSensorPollerStart:
 
     @patch("services.polling_service.threading.Thread")
     @patch("services.polling_service.TuyaConfig")
-    def test_start_sets_running_flag(self, mock_tuya_config, mock_thread, mock_env_vars):
+    def test_start_sets_running_flag(
+        self, mock_tuya_config, mock_thread, mock_env_vars
+    ):
         """Test that start sets running flag to True."""
         from services.polling_service import DoorSensorPoller
 

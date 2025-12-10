@@ -103,14 +103,18 @@ class TuyaListener:
                 timestamp = data.get("ts")
 
                 status_list = properties
-                logging.debug(f"Protocol 1000 format detected: {len(properties)} properties")
+                logging.debug(
+                    f"Protocol 1000 format detected: {len(properties)} properties"
+                )
 
             # Format 2: Protocol 4 with status (older format)
             elif "devId" in data:
                 device_id = data.get("devId")
                 status_list = data.get("status", [])
                 timestamp = data.get("t")
-                logging.debug(f"Protocol 4 format detected: {len(status_list)} status items")
+                logging.debug(
+                    f"Protocol 4 format detected: {len(status_list)} status items"
+                )
 
             else:
                 logging.debug(f"Unknown message format: {data.keys()}")
@@ -137,7 +141,9 @@ class TuyaListener:
 
                 if code == "doorcontact_state":
                     # Extract timestamp from various possible fields
-                    status_timestamp = status.get("time") or status.get("t") or timestamp or "N/A"
+                    status_timestamp = (
+                        status.get("time") or status.get("t") or timestamp or "N/A"
+                    )
 
                     if value:
                         # Door opened event
@@ -184,11 +190,21 @@ class TuyaListener:
         to ensure configuration is valid before attempting connection.
         """
         print("\n[tuya_listener.start()] Function called")
-        print(f"Access ID: {self.access_id[:10]}..." if self.access_id else "ERROR: No Access ID")
-        print(f"Access Secret: {'*' * 10}" if self.access_secret else "ERROR: No Secret")
+        print(
+            f"Access ID: {self.access_id[:10]}..."
+            if self.access_id
+            else "ERROR: No Access ID"
+        )
+        print(
+            f"Access Secret: {'*' * 10}" if self.access_secret else "ERROR: No Secret"
+        )
 
         # Validate credentials are configured
-        if not self.access_id or not self.access_secret or self.access_id == "your_access_id":
+        if (
+            not self.access_id
+            or not self.access_secret
+            or self.access_id == "your_access_id"
+        ):
             print("WARNING: Tuya Access ID/Secret not found. Listener will NOT start.")
             logging.warning(
                 "WARNING: Tuya Access ID/Secret not found. Webhook listener will NOT start."
@@ -200,7 +216,9 @@ class TuyaListener:
         from services.tuya_service import tuya_service
 
         if not tuya_service.is_authenticated():
-            print("ERROR: Tuya credentials invalid (HTTP auth failed). Listener will NOT start.")
+            print(
+                "ERROR: Tuya credentials invalid (HTTP auth failed). Listener will NOT start."
+            )
             logging.error(
                 "ERROR: Tuya credentials invalid (HTTP auth failed). Webhook listener will NOT start."
             )

@@ -43,7 +43,9 @@ def test_connection():
         # We will try to start it and see if it throws a 401 immediately.
 
         try:
-            pulsar = TuyaOpenPulsar(ACCESS_ID, ACCESS_SECRET, endpoint, TuyaCloudPulsarTopic.PROD)
+            pulsar = TuyaOpenPulsar(
+                ACCESS_ID, ACCESS_SECRET, endpoint, TuyaCloudPulsarTopic.PROD
+            )
 
             # Monkey patch error handler to capture success/fail
             connection_status = {"connected": False, "error": None}

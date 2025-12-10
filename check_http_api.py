@@ -49,7 +49,9 @@ def check_all_regions():
         print(f"\nSUCCESS! Your project is located in: {success_region[0]}")
         print(f"Please update your .env file:")
         print(f"TUYA_ENDPOINT={success_region[1]}")
-        print(f"TUYA_PULSAR_ENDPOINT= (Set the matching pulsar endpoint for {success_region[0]})")
+        print(
+            f"TUYA_PULSAR_ENDPOINT= (Set the matching pulsar endpoint for {success_region[0]})"
+        )
     else:
         print("\nFailed to connect to any region.")
         print("   -> DEFINITE CAUSE: Your Access ID or Access Secret is INVALID.")

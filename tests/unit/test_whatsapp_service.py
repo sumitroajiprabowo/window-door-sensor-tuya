@@ -27,7 +27,9 @@ class TestSendWhatsAppMessage:
         mock_post.assert_called_once()
 
     @patch("services.whatsapp_service.requests.post")
-    def test_send_whatsapp_message_calls_api_with_correct_url(self, mock_post, mock_env_vars):
+    def test_send_whatsapp_message_calls_api_with_correct_url(
+        self, mock_post, mock_env_vars
+    ):
         """Test that API is called with correct URL."""
         mock_response = Mock()
         mock_response.status_code = 200
@@ -59,7 +61,9 @@ class TestSendWhatsAppMessage:
         assert auth.password == WhatsAppConfig.API_PASSWORD
 
     @patch("services.whatsapp_service.requests.post")
-    def test_send_whatsapp_message_includes_correct_headers(self, mock_post, mock_env_vars):
+    def test_send_whatsapp_message_includes_correct_headers(
+        self, mock_post, mock_env_vars
+    ):
         """Test that request includes correct headers."""
         mock_response = Mock()
         mock_response.status_code = 200
@@ -73,7 +77,9 @@ class TestSendWhatsAppMessage:
         assert call_kwargs["headers"]["Content-Type"] == "application/json"
 
     @patch("services.whatsapp_service.requests.post")
-    def test_send_whatsapp_message_includes_correct_payload(self, mock_post, mock_env_vars):
+    def test_send_whatsapp_message_includes_correct_payload(
+        self, mock_post, mock_env_vars
+    ):
         """Test that request includes correct payload."""
         mock_response = Mock()
         mock_response.status_code = 200
@@ -109,7 +115,9 @@ class TestSendWhatsAppMessage:
 
     @patch("services.whatsapp_service.requests.post")
     @patch("services.whatsapp_service.logging")
-    def test_send_whatsapp_message_logs_info(self, mock_logging, mock_post, mock_env_vars):
+    def test_send_whatsapp_message_logs_info(
+        self, mock_logging, mock_post, mock_env_vars
+    ):
         """Test that function logs message sending."""
         mock_response = Mock()
         mock_response.status_code = 200
@@ -153,7 +161,9 @@ class TestSendWhatsAppMessage:
         """Test handling of HTTP error response."""
         mock_response = Mock()
         mock_response.status_code = 400
-        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError("Bad Request")
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "Bad Request"
+        )
         mock_post.return_value = mock_response
 
         from services.whatsapp_service import send_whatsapp_message
@@ -171,7 +181,9 @@ class TestSendWhatsAppMessage:
         mock_response = Mock()
         mock_response.status_code = 400
         mock_response.text = "Error details"
-        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError("Bad Request")
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "Bad Request"
+        )
         mock_response.raise_for_status.side_effect.response = mock_response
         mock_post.return_value = mock_response
 
@@ -209,7 +221,9 @@ class TestSendDoorOpenedAlert:
     """Test cases for send_door_opened_alert function."""
 
     @patch("services.whatsapp_service.send_whatsapp_message")
-    def test_send_door_opened_alert_calls_send_whatsapp_message(self, mock_send, mock_env_vars):
+    def test_send_door_opened_alert_calls_send_whatsapp_message(
+        self, mock_send, mock_env_vars
+    ):
         """Test that send_door_opened_alert calls send_whatsapp_message."""
         mock_send.return_value = True
 
@@ -232,7 +246,9 @@ class TestSendDoorOpenedAlert:
         assert result is True
 
     @patch("services.whatsapp_service.send_whatsapp_message")
-    def test_send_door_opened_alert_returns_false_on_failure(self, mock_send, mock_env_vars):
+    def test_send_door_opened_alert_returns_false_on_failure(
+        self, mock_send, mock_env_vars
+    ):
         """Test that send_door_opened_alert returns False on failure."""
         mock_send.return_value = False
 
@@ -247,7 +263,9 @@ class TestSendDoorClosedAlert:
     """Test cases for send_door_closed_alert function."""
 
     @patch("services.whatsapp_service.send_whatsapp_message")
-    def test_send_door_closed_alert_calls_send_whatsapp_message(self, mock_send, mock_env_vars):
+    def test_send_door_closed_alert_calls_send_whatsapp_message(
+        self, mock_send, mock_env_vars
+    ):
         """Test that send_door_closed_alert calls send_whatsapp_message."""
         mock_send.return_value = True
 
@@ -270,7 +288,9 @@ class TestSendDoorClosedAlert:
         assert result is True
 
     @patch("services.whatsapp_service.send_whatsapp_message")
-    def test_send_door_closed_alert_returns_false_on_failure(self, mock_send, mock_env_vars):
+    def test_send_door_closed_alert_returns_false_on_failure(
+        self, mock_send, mock_env_vars
+    ):
         """Test that send_door_closed_alert returns False on failure."""
         mock_send.return_value = False
 

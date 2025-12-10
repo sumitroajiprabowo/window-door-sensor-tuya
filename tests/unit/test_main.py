@@ -142,7 +142,9 @@ class TestStartListener:
         mock_listener = Mock()
         mock_tuya_listener_module.tuya_listener = mock_listener
 
-        with patch.dict("sys.modules", {"services.tuya_listener": mock_tuya_listener_module}):
+        with patch.dict(
+            "sys.modules", {"services.tuya_listener": mock_tuya_listener_module}
+        ):
             from main import start_listener
 
             start_listener()
@@ -154,9 +156,13 @@ class TestStartListener:
         """Test that start_listener handles exceptions gracefully."""
         # Mock the services.tuya_listener module to raise an exception
         mock_tuya_listener_module = Mock()
-        mock_tuya_listener_module.tuya_listener.start.side_effect = Exception("Connection error")
+        mock_tuya_listener_module.tuya_listener.start.side_effect = Exception(
+            "Connection error"
+        )
 
-        with patch.dict("sys.modules", {"services.tuya_listener": mock_tuya_listener_module}):
+        with patch.dict(
+            "sys.modules", {"services.tuya_listener": mock_tuya_listener_module}
+        ):
             from main import start_listener
 
             # Should not raise exception - it catches and prints it
@@ -170,9 +176,13 @@ class TestStartListener:
         """Test that start_listener prints traceback on error."""
         # Mock the services.tuya_listener module to raise an exception
         mock_tuya_listener_module = Mock()
-        mock_tuya_listener_module.tuya_listener.start.side_effect = Exception("Test error")
+        mock_tuya_listener_module.tuya_listener.start.side_effect = Exception(
+            "Test error"
+        )
 
-        with patch.dict("sys.modules", {"services.tuya_listener": mock_tuya_listener_module}):
+        with patch.dict(
+            "sys.modules", {"services.tuya_listener": mock_tuya_listener_module}
+        ):
             from main import start_listener
 
             # Should catch exception and print traceback

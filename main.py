@@ -16,7 +16,9 @@ import sys
 
 # Configure logging before creating Flask app to ensure proper initialization
 log_level = logging.DEBUG if Config.DEBUG else logging.INFO
-logging.basicConfig(level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +41,9 @@ def validate_configuration():
         return True
     except ValueError as e:
         logger.error(f"Configuration validation failed: {e}")
-        logger.error("Please check your .env file and ensure all required variables are set")
+        logger.error(
+            "Please check your .env file and ensure all required variables are set"
+        )
         return False
 
 

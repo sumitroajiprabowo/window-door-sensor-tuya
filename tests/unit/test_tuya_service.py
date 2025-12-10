@@ -12,7 +12,9 @@ class TestTuyaServiceInit:
     """Test cases for TuyaService initialization."""
 
     @patch("services.tuya_service.TuyaOpenAPI")
-    def test_tuya_service_init_creates_openapi_instance(self, mock_tuya_api, mock_env_vars):
+    def test_tuya_service_init_creates_openapi_instance(
+        self, mock_tuya_api, mock_env_vars
+    ):
         """Test that TuyaService creates TuyaOpenAPI instance on init."""
         from services.tuya_service import TuyaService
         from config.Config import TuyaConfig
@@ -87,7 +89,9 @@ class TestTuyaServiceConnect:
 
     @patch("services.tuya_service.TuyaOpenAPI")
     @patch("services.tuya_service.logging")
-    def test_connect_handles_exception(self, mock_logging, mock_tuya_api, mock_env_vars):
+    def test_connect_handles_exception(
+        self, mock_logging, mock_tuya_api, mock_env_vars
+    ):
         """Test connect() handles exceptions gracefully."""
         mock_instance = Mock()
         mock_tuya_api.return_value = mock_instance
@@ -110,7 +114,9 @@ class TestTuyaServiceIsAuthenticated:
     """Test cases for TuyaService.is_authenticated() method."""
 
     @patch("services.tuya_service.TuyaOpenAPI")
-    def test_is_authenticated_returns_true_when_connected(self, mock_tuya_api, mock_env_vars):
+    def test_is_authenticated_returns_true_when_connected(
+        self, mock_tuya_api, mock_env_vars
+    ):
         """Test is_authenticated returns True when properly connected."""
         mock_instance = Mock()
         mock_tuya_api.return_value = mock_instance
@@ -142,7 +148,9 @@ class TestTuyaServiceIsAuthenticated:
         assert result is False
 
     @patch("services.tuya_service.TuyaOpenAPI")
-    def test_is_authenticated_returns_false_when_not_connected(self, mock_tuya_api, mock_env_vars):
+    def test_is_authenticated_returns_false_when_not_connected(
+        self, mock_tuya_api, mock_env_vars
+    ):
         """Test is_authenticated returns False when not connected."""
         mock_instance = Mock()
         mock_tuya_api.return_value = mock_instance
@@ -174,7 +182,9 @@ class TestTuyaServiceIsAuthenticated:
         assert result is False
 
     @patch("services.tuya_service.TuyaOpenAPI")
-    def test_is_authenticated_returns_false_with_none_access_id(self, mock_tuya_api, mock_env_vars):
+    def test_is_authenticated_returns_false_with_none_access_id(
+        self, mock_tuya_api, mock_env_vars
+    ):
         """Test is_authenticated returns False with None access_id."""
         mock_instance = Mock()
         mock_tuya_api.return_value = mock_instance
@@ -210,7 +220,9 @@ class TestTuyaServiceGetDeviceStatus:
         mock_instance.connect.assert_called_once()
 
     @patch("services.tuya_service.TuyaOpenAPI")
-    def test_get_device_status_makes_correct_api_call(self, mock_tuya_api, mock_env_vars):
+    def test_get_device_status_makes_correct_api_call(
+        self, mock_tuya_api, mock_env_vars
+    ):
         """Test get_device_status makes correct API call."""
         mock_instance = Mock()
         mock_tuya_api.return_value = mock_instance
@@ -315,7 +327,10 @@ class TestTuyaServiceSendCommand:
 
         from services.tuya_service import TuyaService
 
-        commands = [{"code": "switch", "value": True}, {"code": "brightness", "value": 75}]
+        commands = [
+            {"code": "switch", "value": True},
+            {"code": "brightness", "value": 75},
+        ]
         service = TuyaService()
         service.send_command("test_device", commands)
 
@@ -335,7 +350,9 @@ class TestTuyaServiceSingleton:
         assert tuya_service.tuya_service is not None
 
     @patch("services.tuya_service.TuyaOpenAPI")
-    def test_tuya_service_singleton_is_tuya_service_instance(self, mock_tuya_api, mock_env_vars):
+    def test_tuya_service_singleton_is_tuya_service_instance(
+        self, mock_tuya_api, mock_env_vars
+    ):
         """Test that tuya_service is an instance of TuyaService."""
         from services.tuya_service import tuya_service, TuyaService
 

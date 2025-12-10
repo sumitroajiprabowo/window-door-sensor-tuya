@@ -58,7 +58,9 @@ def send_whatsapp_message(message: str) -> bool:
         )
         response.raise_for_status()
 
-        logging.info(f"WhatsApp message sent successfully (HTTP {response.status_code})")
+        logging.info(
+            f"WhatsApp message sent successfully (HTTP {response.status_code})"
+        )
         return True
 
     except requests.exceptions.RequestException as e:

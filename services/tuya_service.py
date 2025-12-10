@@ -96,7 +96,9 @@ class TuyaService:
             dict: API response indicating command execution status
         """
         self.connect()
-        response = self.openapi.post(f"/v1.0/devices/{device_id}/commands", {"commands": commands})
+        response = self.openapi.post(
+            f"/v1.0/devices/{device_id}/commands", {"commands": commands}
+        )
         return response
 
 
