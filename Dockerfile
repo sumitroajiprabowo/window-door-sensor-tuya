@@ -1,5 +1,5 @@
 # Multi-stage build for smaller image size
-FROM python:3.9-slim as base
+FROM python:3.9-slim AS base
 
 # Set working directory
 WORKDIR /app
