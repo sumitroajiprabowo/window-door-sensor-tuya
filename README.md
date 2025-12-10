@@ -301,4 +301,4 @@ make clean           # Clean build artifacts
 
 ## License
 
-MIT
+[MIT](LICENSE)
