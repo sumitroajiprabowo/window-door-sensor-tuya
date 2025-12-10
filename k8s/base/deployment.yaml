@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
       - name: door-sensor-monitor
-        image: door-sensor-monitor:latest
-        imagePullPolicy: IfNotPresent
+        image: sumitroajiprabowo/door-sensor-monitor:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5001
         env:
