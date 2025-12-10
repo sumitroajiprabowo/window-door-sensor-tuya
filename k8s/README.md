@@ -214,7 +214,7 @@ docker push your-registry/door-sensor-monitor:latest
 Update the image in `k8s/base/deployment.yaml` and overlay kustomization files to use your registry:
 
 ```yaml
-image: your-registry.io/door-sensor-monitor:latest
+image: sumitroajiprabowo/door-sensor-monitor:latest
 ```
 
 ## Monitoring and Troubleshooting
