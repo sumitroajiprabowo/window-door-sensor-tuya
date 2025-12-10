@@ -2,5 +2,5 @@ Flask==3.0.0
 flask-cors==6.0.0
 tuya-connector-python==0.1.2
 python-dotenv==1.0.0
-requests==2.31.0
+requests==2.32.4
 # paho-mqtt and others are dependencies of tuya-connector-python
