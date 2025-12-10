@@ -3,7 +3,6 @@
 [![Tests](https://github.com/sumitroajiprabowo/window-door-sensor-tuya/actions/workflows/tests.yml/badge.svg)](https://github.com/sumitroajiprabowo/window-door-sensor-tuya/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/sumitroajiprabowo/window-door-sensor-tuya/branch/main/graph/badge.svg)](https://codecov.io/gh/sumitroajiprabowo/window-door-sensor-tuya)
 [![Docker](https://img.shields.io/docker/v/sumitroajiprabowo/door-sensor-monitor?label=docker&logo=docker)](https://hub.docker.com/r/sumitroajiprabowo/door-sensor-monitor)
-[![Docker Pulls](https://img.shields.io/docker/pulls/sumitroajiprabowo/door-sensor-monitor)](https://hub.docker.com/r/sumitroajiprabowo/door-sensor-monitor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
