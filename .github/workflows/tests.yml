@@ -50,7 +50,7 @@ jobs:
         coverage report --fail-under=90
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
@@ -116,7 +116,6 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     needs: [test, lint, security]
-    environment: ci
     if: github.event_name == 'push'
 
     steps:
@@ -139,7 +138,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ secrets.DOCKERHUB_REPO }}
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}
         tags: |
           type=ref,event=branch
           type=sha,prefix={{branch}}-
@@ -155,8 +154,8 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=registry,ref=${{ secrets.DOCKERHUB_REPO }}:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKERHUB_REPO }}:buildcache,mode=max
+        cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:buildcache
+        cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:buildcache,mode=max
         build-args: |
           BUILD_DATE=${{ github.event.head_commit.timestamp }}
           VCS_REF=${{ github.sha }}
@@ -174,7 +173,7 @@ jobs:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: ${{ secrets.DOCKERHUB_REPO }}:${{ github.ref_name }}
+        image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ github.ref_name }}
         format: 'sarif'
         output: 'trivy-results.sarif'
 

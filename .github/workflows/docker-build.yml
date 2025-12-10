@@ -8,7 +8,6 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    environment: ci
 
     steps:
     - name: Checkout code
@@ -43,10 +42,10 @@ jobs:
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_REPO }}:${{ steps.version.outputs.VERSION }}
-          ${{ secrets.DOCKERHUB_REPO }}:latest
-        cache-from: type=registry,ref=${{ secrets.DOCKERHUB_REPO }}:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKERHUB_REPO }}:buildcache,mode=max
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ steps.version.outputs.VERSION }}
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+        cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:buildcache
+        cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:buildcache,mode=max
         build-args: |
           BUILD_DATE=${{ github.event.head_commit.timestamp }}
           VCS_REF=${{ github.sha }}
@@ -57,5 +56,5 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-        repository: ${{ secrets.DOCKERHUB_REPO }}
+        repository: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}
         readme-filepath: ./README.md
