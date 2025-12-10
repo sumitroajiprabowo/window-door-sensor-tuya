@@ -7,6 +7,7 @@ processes them as they occur.
 
 Note: Currently disabled in favor of HTTP polling due to encryption issues.
 """
+
 import logging
 import json
 from tuya_connector import TuyaOpenPulsar, TuyaCloudPulsarTopic
