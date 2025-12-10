@@ -16,4 +16,4 @@ patches:
         value: "staging"
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: "door-sensor-monitor:staging"
+        value: "sumitroajiprabowo/door-sensor-monitor:staging"

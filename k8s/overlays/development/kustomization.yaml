@@ -16,4 +16,4 @@ patches:
         value: "development"
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: "door-sensor-monitor:dev"
+        value: "sumitroajiprabowo/door-sensor-monitor:latest"

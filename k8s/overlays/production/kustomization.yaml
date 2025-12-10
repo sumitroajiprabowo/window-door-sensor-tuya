@@ -20,7 +20,7 @@ patches:
         value: "production"
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: "door-sensor-monitor:latest"
+        value: "sumitroajiprabowo/door-sensor-monitor:latest"
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
         value: "512Mi"
