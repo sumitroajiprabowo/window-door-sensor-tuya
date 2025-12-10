@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: door-sensor-monitor
+  labels:
+    app: door-sensor-monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: door-sensor-monitor
+  template:
+    metadata:
+      labels:
+        app: door-sensor-monitor
+    spec:
+      containers:
+      - name: door-sensor-monitor
+        image: door-sensor-monitor:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5001
+        env:
+        - name: ENV
+          value: "development"
+        # Secrets should be injected via Secret or ExternalSecrets
+        envFrom:
+          - secretRef:
+              name: door-sensor-secrets
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 5
+          periodSeconds: 10

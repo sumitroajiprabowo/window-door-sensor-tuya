@@ -1,0 +1,86 @@
+# Environment files - CRITICAL: Never include in Docker image!
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+.eggs
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.tox/
+.coverage
+.pytest_cache/
+.hypothesis/
+htmlcov/
+
+# Logs
+*.log
+logs/
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Documentation
+README.md
+*.md
+docs/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+test_*.py
+debug_*.py
+*_test.py
+
+# Sensitive data
+credentials.json
+secrets/
+*.key
+*.pem
+*.crt
+*.p12
