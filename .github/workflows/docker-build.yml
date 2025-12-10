@@ -45,8 +45,6 @@ jobs:
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ steps.version.outputs.VERSION }}
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
-        cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:buildcache,mode=max
         build-args: |
           BUILD_DATE=${{ github.event.head_commit.timestamp }}
           VCS_REF=${{ github.sha }}
