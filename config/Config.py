@@ -63,9 +63,7 @@ class TuyaConfig:
         required = ["ACCESS_ID", "ACCESS_SECRET", "API_ENDPOINT", "DEVICE_ID"]
         missing = [key for key in required if not getattr(cls, key)]
         if missing:
-            raise ValueError(
-                f"Missing required Tuya configuration: {', '.join(missing)}"
-            )
+            raise ValueError(f"Missing required Tuya configuration: {', '.join(missing)}")
 
 
 class WhatsAppConfig:
@@ -85,12 +83,8 @@ class WhatsAppConfig:
     GROUP_ID = os.getenv("WA_GROUP_ID")
 
     # Customizable alert messages
-    MESSAGE_DOOR_OPENED = os.getenv(
-        "WA_MESSAGE_DOOR_OPENED", "DOOR OPENED - Server room accessed"
-    )
-    MESSAGE_DOOR_CLOSED = os.getenv(
-        "WA_MESSAGE_DOOR_CLOSED", "DOOR CLOSED - Server room secured"
-    )
+    MESSAGE_DOOR_OPENED = os.getenv("WA_MESSAGE_DOOR_OPENED", "DOOR OPENED - Server room accessed")
+    MESSAGE_DOOR_CLOSED = os.getenv("WA_MESSAGE_DOOR_CLOSED", "DOOR CLOSED - Server room secured")
     MESSAGE_SENSOR_INITIALIZED = os.getenv(
         "WA_MESSAGE_SENSOR_INITIALIZED", "SENSOR IS WORKING - Monitoring started"
     )
@@ -110,6 +104,4 @@ class WhatsAppConfig:
         required = ["API_URL", "API_USER", "API_PASSWORD", "GROUP_ID"]
         missing = [key for key in required if not getattr(cls, key)]
         if missing:
-            raise ValueError(
-                f"Missing required WhatsApp configuration: {', '.join(missing)}"
-            )
+            raise ValueError(f"Missing required WhatsApp configuration: {', '.join(missing)}")

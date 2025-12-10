@@ -139,9 +139,7 @@ def main():
 
     if tester.found_region:
         print(f"\nFOUND! Your project is in: {tester.found_region[0]}")
-        print(
-            f"Please update .env with:\nTUYA_PULSAR_ENDPOINT={tester.found_region[1]}"
-        )
+        print(f"Please update .env with:\nTUYA_PULSAR_ENDPOINT={tester.found_region[1]}")
     else:
         print("\nCould not connect to any region. Check your Access ID/Secret.")
 

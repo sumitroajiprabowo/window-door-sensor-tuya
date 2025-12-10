@@ -159,9 +159,7 @@ class TestSendDeviceCommand:
         assert data["message"] == "Command sent successfully"
 
     @patch("routes.device.tuya_service")
-    def test_send_device_command_calls_service(
-        self, mock_tuya_service, flask_test_client
-    ):
+    def test_send_device_command_calls_service(self, mock_tuya_service, flask_test_client):
         """Test that service is called with correct parameters."""
         mock_tuya_service.send_command.return_value = {"success": True, "result": {}}
 
@@ -201,9 +199,7 @@ class TestSendDeviceCommand:
         assert data["message"] == "Invalid request body"
 
     @patch("routes.device.tuya_service")
-    def test_send_device_command_api_failure(
-        self, mock_tuya_service, flask_test_client
-    ):
+    def test_send_device_command_api_failure(self, mock_tuya_service, flask_test_client):
         """Test handling of API failure response."""
         mock_tuya_service.send_command.return_value = {
             "success": False,
@@ -242,9 +238,7 @@ class TestSendDeviceCommand:
         assert data["message"] == "Internal Server Error"
 
     @patch("routes.device.tuya_service")
-    def test_send_device_command_multiple_commands(
-        self, mock_tuya_service, flask_test_client
-    ):
+    def test_send_device_command_multiple_commands(self, mock_tuya_service, flask_test_client):
         """Test sending multiple commands at once."""
         mock_tuya_service.send_command.return_value = {"success": True, "result": {}}
 
@@ -263,9 +257,7 @@ class TestSendDeviceCommand:
         mock_tuya_service.send_command.assert_called_once_with("test_device", commands)
 
     @patch("routes.device.tuya_service")
-    def test_send_device_command_empty_commands(
-        self, mock_tuya_service, flask_test_client
-    ):
+    def test_send_device_command_empty_commands(self, mock_tuya_service, flask_test_client):
         """Test sending empty commands list."""
         mock_tuya_service.send_command.return_value = {"success": True, "result": {}}
 
@@ -279,9 +271,7 @@ class TestSendDeviceCommand:
         assert response.status_code == 200
 
     @patch("routes.device.tuya_service")
-    def test_send_device_command_missing_msg(
-        self, mock_tuya_service, flask_test_client
-    ):
+    def test_send_device_command_missing_msg(self, mock_tuya_service, flask_test_client):
         """Test handling when API response is missing msg field."""
         mock_tuya_service.send_command.return_value = {
             "success": False,
@@ -300,9 +290,7 @@ class TestSendDeviceCommand:
         assert data["message"] == "Failed to send command"
 
     @patch("routes.device.tuya_service")
-    def test_send_device_command_missing_code(
-        self, mock_tuya_service, flask_test_client
-    ):
+    def test_send_device_command_missing_code(self, mock_tuya_service, flask_test_client):
         """Test handling when API response is missing code field."""
         mock_tuya_service.send_command.return_value = {
             "success": False,

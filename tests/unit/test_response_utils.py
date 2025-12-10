@@ -169,9 +169,7 @@ class TestErrorResponse:
         """Test error response for internal server error."""
         from utils.response import error_response
 
-        response, status_code = error_response(
-            message="Internal Server Error", status_code=500
-        )
+        response, status_code = error_response(message="Internal Server Error", status_code=500)
 
         assert status_code == 500
         response_data = json.loads(response.get_data(as_text=True))

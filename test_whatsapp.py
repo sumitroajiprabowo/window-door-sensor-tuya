@@ -10,9 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Setup logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 print("\n" + "=" * 70)
 print("WHATSAPP API TEST")

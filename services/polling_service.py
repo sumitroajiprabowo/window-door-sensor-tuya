@@ -129,9 +129,7 @@ class DoorSensorPoller:
                         self.last_door_state = door_state
 
                 else:
-                    logging.warning(
-                        f"Failed to get device status: {response.get('msg')}"
-                    )
+                    logging.warning(f"Failed to get device status: {response.get('msg')}")
 
             except Exception as e:
                 logging.error(f"Error in polling loop: {e}")

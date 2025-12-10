@@ -10,9 +10,7 @@ from tuya_connector import TuyaOpenPulsar, TuyaCloudPulsarTopic
 
 load_dotenv()
 
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 ACCESS_ID = os.getenv("TUYA_ACCESS_ID")
 ACCESS_SECRET = os.getenv("TUYA_ACCESS_SECRET")
