@@ -23,10 +23,10 @@ spec:
         env:
         - name: ENV
           value: "development"
-        # Secrets should be injected via Secret or ExternalSecrets
+        # Inject all secrets as environment variables
         envFrom:
           - secretRef:
-              name: door-sensor-secrets
+              name: door-sensor-jebed-secrets
         resources:
           limits:
             memory: "256Mi"
