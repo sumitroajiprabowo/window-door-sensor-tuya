@@ -135,7 +135,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Extract metadata for Docker
+
     - name: Build and push Docker image (Multi-arch)
       uses: docker/build-push-action@v6
       with:
