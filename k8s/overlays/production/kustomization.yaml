@@ -8,7 +8,7 @@ resources:
 
 replicas:
   - name: door-sensor-monitor
-    count: 2
+    count: 1
 
 patches:
   - target:
