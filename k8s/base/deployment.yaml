@@ -34,15 +34,30 @@ spec:
           requests:
             memory: "128Mi"
             cpu: "100m"
+        # Startup probe - allow up to 60s for app initialization
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 12  # 10s + (5s * 12) = 70s max startup time
+          timeoutSeconds: 3
+        # Liveness probe - restart if app becomes unresponsive
         livenessProbe:
           httpGet:
             path: /health
             port: 5001
-          initialDelaySeconds: 30
+          initialDelaySeconds: 0  # Startup probe handles initial delay
           periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 3
+        # Readiness probe - remove from load balancer if unhealthy
         readinessProbe:
           httpGet:
             path: /health
             port: 5001
-          initialDelaySeconds: 5
+          initialDelaySeconds: 0  # Startup probe handles initial delay
           periodSeconds: 10
+          failureThreshold: 2
+          timeoutSeconds: 3
