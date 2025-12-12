@@ -142,13 +142,30 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
 
+    - name: Extract metadata (tags, labels)
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}
+        tags: |
+          # Tag with git SHA (short)
+          type=sha,prefix=sha-,format=short
+          # Tag with branch name
+          type=ref,event=branch
+          # Tag with semantic version if tagged
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          # Always tag as latest on main branch
+          type=raw,value=latest,enable={{is_default_branch}}
+
     - name: Build and push Docker image (Multi-arch)
       uses: docker/build-push-action@v6
       with:
         context: .
         platforms: linux/amd64,linux/arm64
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
         build-args: |
           BUILD_DATE=${{ github.event.head_commit.timestamp }}
           VCS_REF=${{ github.sha }}
@@ -156,6 +173,54 @@ jobs:
 
     - name: Image digest
       run: echo "Image pushed successfully with multi-arch support (amd64, arm64)"
+
+    - name: Output image tags
+      run: |
+        echo "Generated tags:"
+        echo "${{ steps.meta.outputs.tags }}"
+
+  update-manifests:
+    runs-on: ubuntu-latest
+    needs: [docker]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update production kustomization with new image tag
+      run: |
+        # Get short SHA
+        SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+        IMAGE_TAG="sha-${SHORT_SHA}"
+
+        # Update production overlay
+        sed -i "s|sumitroajiprabowo/door-sensor-monitor:.*|sumitroajiprabowo/door-sensor-monitor:${IMAGE_TAG}\"|g" k8s/overlays/production/kustomization.yaml
+
+        echo "Updated image tag to: ${IMAGE_TAG}"
+        cat k8s/overlays/production/kustomization.yaml | grep "sumitroajiprabowo/door-sensor-monitor"
+
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+
+        if git diff --quiet; then
+          echo "No changes to commit"
+          exit 0
+        fi
+
+        git add k8s/overlays/production/kustomization.yaml
+        git commit -m "chore: update production image to sha-$(echo ${{ github.sha }} | cut -c1-7)
+
+        🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+        Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+        git push
 
   docker-security-scan:
     runs-on: ubuntu-latest
