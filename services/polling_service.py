@@ -129,11 +129,15 @@ class DoorSensorPoller:
                         self.last_door_state = door_state
 
                 else:
-                    error_msg = response.get('msg', 'Unknown error')
-                    error_code = response.get('code', '')
+                    error_msg = response.get("msg", "Unknown error")
+                    error_code = response.get("code", "")
 
                     # Check for quota exhaustion or permission errors
-                    if "quota" in error_msg.lower() or "permission" in error_msg.lower() or error_code == 1106:
+                    if (
+                        "quota" in error_msg.lower()
+                        or "permission" in error_msg.lower()
+                        or error_code == 1106
+                    ):
                         # Use exponential backoff for quota errors
                         logging.error(f"⚠️  QUOTA EXHAUSTED: {error_msg}")
                         logging.error(f"⏸️  Pausing polling for 1 hour to preserve quota...")

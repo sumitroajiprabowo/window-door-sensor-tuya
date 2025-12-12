@@ -339,19 +339,13 @@ class TestDoorSensorPollerPollLoop:
         poller._poll_loop()
 
         # Check that error was logged
-        assert any(
-            "QUOTA EXHAUSTED" in str(call)
-            for call in mock_logging.error.call_args_list
-        )
+        assert any("QUOTA EXHAUSTED" in str(call) for call in mock_logging.error.call_args_list)
 
         # Check that we paused for 1 hour (3600 seconds)
         assert call(3600) in mock_sleep.call_args_list
 
         # Check that resume message was logged
-        assert any(
-            "Resuming" in str(call)
-            for call in mock_logging.info.call_args_list
-        )
+        assert any("Resuming" in str(call) for call in mock_logging.info.call_args_list)
 
     @patch("services.polling_service.tuya_service")
     @patch("services.polling_service.time.sleep")
