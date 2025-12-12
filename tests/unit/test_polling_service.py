@@ -307,6 +307,173 @@ class TestDoorSensorPollerPollLoop:
     @patch("services.polling_service.time.sleep")
     @patch("services.polling_service.logging")
     @patch("services.polling_service.TuyaConfig")
+    def test_poll_loop_handles_quota_exhaustion(
+        self,
+        mock_tuya_config,
+        mock_logging,
+        mock_sleep,
+        mock_tuya_service,
+        mock_env_vars,
+    ):
+        """Test that poll loop pauses for 1 hour when quota is exhausted."""
+        mock_tuya_service.get_device_status.return_value = {
+            "success": False,
+            "msg": "No permissions. Your quota of Trial Edition is used up.",
+            "code": 1106,
+        }
+
+        from services.polling_service import DoorSensorPoller
+
+        poller = DoorSensorPoller(poll_interval=1)
+        poller.running = True
+
+        call_count = [0]
+
+        def stop_after_quota_pause(*args):
+            call_count[0] += 1
+            if call_count[0] >= 2:  # After quota pause sleep
+                poller.running = False
+
+        mock_sleep.side_effect = stop_after_quota_pause
+
+        poller._poll_loop()
+
+        # Check that error was logged
+        assert any(
+            "QUOTA EXHAUSTED" in str(call)
+            for call in mock_logging.error.call_args_list
+        )
+
+        # Check that we paused for 1 hour (3600 seconds)
+        assert call(3600) in mock_sleep.call_args_list
+
+        # Check that resume message was logged
+        assert any(
+            "Resuming" in str(call)
+            for call in mock_logging.info.call_args_list
+        )
+
+    @patch("services.polling_service.tuya_service")
+    @patch("services.polling_service.time.sleep")
+    @patch("services.polling_service.logging")
+    @patch("services.polling_service.TuyaConfig")
+    def test_poll_loop_handles_permission_error(
+        self,
+        mock_tuya_config,
+        mock_logging,
+        mock_sleep,
+        mock_tuya_service,
+        mock_env_vars,
+    ):
+        """Test that poll loop handles permission errors with pause."""
+        mock_tuya_service.get_device_status.return_value = {
+            "success": False,
+            "msg": "No permission to access",
+        }
+
+        from services.polling_service import DoorSensorPoller
+
+        poller = DoorSensorPoller(poll_interval=1)
+        poller.running = True
+
+        call_count = [0]
+
+        def stop_after_pause(*args):
+            call_count[0] += 1
+            if call_count[0] >= 2:
+                poller.running = False
+
+        mock_sleep.side_effect = stop_after_pause
+
+        poller._poll_loop()
+
+        # Should pause for 1 hour
+        assert call(3600) in mock_sleep.call_args_list
+
+    @patch("services.polling_service.tuya_service")
+    @patch("services.polling_service.send_door_opened_alert")
+    @patch("services.polling_service.time.sleep")
+    @patch("services.polling_service.TuyaConfig")
+    @patch("sys.stdout", new_callable=StringIO)
+    def test_poll_loop_prints_battery_on_door_opened(
+        self,
+        mock_stdout,
+        mock_tuya_config,
+        mock_sleep,
+        mock_alert,
+        mock_tuya_service,
+        mock_env_vars,
+    ):
+        """Test that poll loop prints battery info when door opens."""
+        mock_tuya_service.get_device_status.return_value = {
+            "success": True,
+            "result": [
+                {"code": "doorcontact_state", "value": True},
+                {"code": "battery_percentage", "value": 75},
+            ],
+        }
+
+        from services.polling_service import DoorSensorPoller
+
+        poller = DoorSensorPoller(poll_interval=1)
+        poller.running = True
+        poller.last_door_state = False
+
+        def stop_after_one(*args):
+            poller.running = False
+
+        mock_sleep.side_effect = stop_after_one
+
+        poller._poll_loop()
+
+        output = mock_stdout.getvalue()
+        assert "Battery: 75%" in output
+        assert "DOOR OPENED" in output
+
+    @patch("services.polling_service.tuya_service")
+    @patch("services.polling_service.send_door_closed_alert")
+    @patch("services.polling_service.time.sleep")
+    @patch("services.polling_service.TuyaConfig")
+    @patch("sys.stdout", new_callable=StringIO)
+    def test_poll_loop_prints_battery_on_door_closed(
+        self,
+        mock_stdout,
+        mock_tuya_config,
+        mock_sleep,
+        mock_alert,
+        mock_tuya_service,
+        mock_env_vars,
+    ):
+        """Test that poll loop prints battery info when door closes."""
+        mock_tuya_service.get_device_status.return_value = {
+            "success": True,
+            "result": [
+                {"code": "doorcontact_state", "value": False},
+                {"code": "battery_percentage", "value": 80},
+            ],
+        }
+
+        from services.polling_service import DoorSensorPoller
+
+        poller = DoorSensorPoller(poll_interval=1)
+        poller.running = True
+        poller.last_door_state = True
+
+        def stop_after_one(*args):
+            poller.running = False
+
+        mock_sleep.side_effect = stop_after_one
+
+        poller._poll_loop()
+
+        output = mock_stdout.getvalue()
+        assert "Battery: 80%" in output
+        assert "DOOR CLOSED" in output
+
+    @patch("services.polling_service.tuya_service")
+    @patch("services.polling_service.time.sleep")
+    @patch("services.polling_service.logging")
+    @patch("services.polling_service.TuyaConfig")
     def test_poll_loop_handles_exception(
         self,
         mock_tuya_config,
