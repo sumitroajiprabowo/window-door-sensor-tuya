@@ -240,6 +240,14 @@ For production-grade GitOps deployments:
 
 See [k8s/README.md](k8s/README.md) for complete Kubernetes deployment documentation.
 
+### Troubleshooting ArgoCD
+
+If ArgoCD is not updating to the latest Docker image after merging to main:
+
+- See [ARGOCD_TROUBLESHOOTING.md](ARGOCD_TROUBLESHOOTING.md) for detailed troubleshooting guide
+- The project now uses **automatic image tagging** with git SHA
+- Production requires **manual sync** for safety (see guide for instructions)
+
 ## API Documentation
 
 See [doc.md](doc.md) for full REST API documentation.
