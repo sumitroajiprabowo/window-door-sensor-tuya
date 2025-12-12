@@ -27,7 +27,7 @@ class Config:
     HOST = os.getenv("FLASK_HOST", "0.0.0.0")
 
     # Device polling configuration
-    POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", 2))  # Seconds between status checks
+    POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", 300))  # Seconds between status checks
 
     # Application environment (production or development)
     ENV = os.getenv("ENV", "production")

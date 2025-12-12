@@ -129,7 +129,27 @@ class DoorSensorPoller:
                         self.last_door_state = door_state
 
                 else:
-                    logging.warning(f"Failed to get device status: {response.get('msg')}")
+                    error_msg = response.get("msg", "Unknown error")
+                    error_code = response.get("code", "")
+
+                    # Check for quota exhaustion or permission errors
+                    if (
+                        "quota" in error_msg.lower()
+                        or "permission" in error_msg.lower()
+                        or error_code == 1106
+                    ):
+                        # Use exponential backoff for quota errors
+                        logging.error(f"⚠️  QUOTA EXHAUSTED: {error_msg}")
+                        logging.error(f"⏸️  Pausing polling for 1 hour to preserve quota...")
+
+                        # Sleep for 1 hour instead of stopping completely
+                        time.sleep(3600)  # 3600 seconds = 1 hour
+
+                        logging.info("♻️  Resuming polling after 1 hour pause...")
+                        continue
+                    else:
+                        # Other errors - log but continue with normal interval
+                        logging.warning(f"Failed to get device status: {error_msg}")
 
             except Exception as e:
                 logging.error(f"Error in polling loop: {e}")
