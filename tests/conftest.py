@@ -25,7 +25,7 @@ def mock_env_vars(monkeypatch):
     # First, set the environment variables
     env_vars = {
         # Flask configuration
-        "FLASK_PORT": "5001",
+        "FLASK_PORT": "5000",
         "FLASK_DEBUG": "False",
         "FLASK_HOST": "0.0.0.0",
         "POLL_INTERVAL": "2",

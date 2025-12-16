@@ -3,7 +3,7 @@
 This API provides an interface to interact with Tuya-based Contact Sensors (door/window sensors) and includes a Webhook feature for real-time event notifications.
 
 ## Base URL
-`http://localhost:5001`
+`http://localhost:5000`
 
 ## Authentication
 Ensure you have configured your `TUYA_ACCESS_ID` and `TUYA_ACCESS_SECRET` in the `.env` file.

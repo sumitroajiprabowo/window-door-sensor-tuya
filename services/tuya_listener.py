@@ -5,7 +5,8 @@ This module implements real-time monitoring of Tuya IoT devices using
 the Pulsar WebSocket protocol. It subscribes to device events and
 processes them as they occur.
 
-Note: Currently disabled in favor of HTTP polling due to encryption issues.
+Provides instant event detection (0-2 second delay) with minimal quota usage.
+Requires Message Service enabled with ECB encryption mode.
 """
 
 import logging
@@ -38,10 +39,14 @@ class TuyaListener:
         self.access_secret = TuyaConfig.ACCESS_SECRET
         self.endpoint = TuyaConfig.TUYA_PULSAR_ENDPOINT
 
+        # Get topic from config (PROD or TEST)
+        # Can be configured via TUYA_TOPIC environment variable
+        topic = TuyaCloudPulsarTopic.PROD if TuyaConfig.TUYA_TOPIC == "PROD" else TuyaCloudPulsarTopic.TEST
+        self.topic_name = TuyaConfig.TUYA_TOPIC
+
         # Initialize Pulsar WebSocket client
-        # Using PROD topic for production environment events
         self.open_pulsar = TuyaOpenPulsar(
-            self.access_id, self.access_secret, self.endpoint, TuyaCloudPulsarTopic.PROD
+            self.access_id, self.access_secret, self.endpoint, topic
         )
         self.open_pulsar.add_message_listener(self.on_message)
 
@@ -84,37 +89,38 @@ class TuyaListener:
             msg (str): JSON-formatted message from Tuya Pulsar
         """
         try:
-            print(f"\n[on_message] Message received from Pulsar!")
             logging.debug(f"Raw message received: {msg}")
 
-            # Parse JSON payload
-            payload = json.loads(msg)
-            data = payload.get("data")
-            if not data:
-                print("WARNING: No 'data' field in message, skipping")
-                logging.debug("No 'data' field in message, skipping")
+            # Parse JSON payload - handle both string and dict
+            if isinstance(msg, str):
+                payload = json.loads(msg)
+            elif isinstance(msg, dict):
+                payload = msg
+            else:
+                logging.error(f"Unexpected message type: {type(msg)}")
                 return
 
-            # Extract device ID and status based on message format
-            #  1: Protocol 1000 with bizData (newer format)
-            if "bizData" in data:
-                biz_data = data.get("bizData", {})
+            # SDK auto-decrypts the message, so we get direct access to bizData
+            # No need to access nested 'data' field
+            if "bizData" in payload:
+                # Protocol 1000 format (newer, already decrypted by SDK)
+                biz_data = payload.get("bizData", {})
                 device_id = biz_data.get("devId")
                 properties = biz_data.get("properties", [])
-                timestamp = data.get("ts")
+                timestamp = payload.get("ts")
 
                 status_list = properties
                 logging.debug(f"Protocol 1000 format detected: {len(properties)} properties")
 
-            # Format 2: Protocol 4 with status (older format)
-            elif "devId" in data:
-                device_id = data.get("devId")
-                status_list = data.get("status", [])
-                timestamp = data.get("t")
+            elif "devId" in payload:
+                # Protocol 4 format (older format)
+                device_id = payload.get("devId")
+                status_list = payload.get("status", [])
+                timestamp = payload.get("t")
                 logging.debug(f"Protocol 4 format detected: {len(status_list)} status items")
 
             else:
-                logging.debug(f"Unknown message format: {data.keys()}")
+                logging.debug(f"Unknown message format: {payload.keys()}")
                 return
 
             # Validate device ID
@@ -216,7 +222,8 @@ class TuyaListener:
         print("Starting Tuya Pulsar Listener...")
         print(f"Endpoint: {self.endpoint}")
         print(f"Monitoring Device: {TuyaConfig.DEVICE_ID}")
-        print(f"Topic: PROD Environment")
+        print(f"Topic: {self.topic_name} Environment")
+        print(f"Encryption: ECB Mode")
         print(f"WhatsApp Group: {WhatsAppConfig.GROUP_ID}")
         print(f"WhatsApp API: {WhatsAppConfig.API_URL}")
         print("=" * 60)

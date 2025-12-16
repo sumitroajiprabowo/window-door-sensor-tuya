@@ -16,7 +16,7 @@ class TestConfig:
         """Test that default port is loaded correctly."""
         from config.Config import Config
 
-        assert Config.PORT == 5001
+        assert Config.PORT == 5000
 
     def test_custom_port(self, monkeypatch):
         """Test that custom port from environment is used."""
@@ -95,7 +95,7 @@ class TestConfig:
 
         importlib.reload(config.Config)
 
-        assert config.Config.Config.ENV == "production"
+        assert config.Config.Config.ENV == "PROD"
 
     def test_custom_env(self, mock_env_vars):
         """Test that custom environment from environment variable is used."""

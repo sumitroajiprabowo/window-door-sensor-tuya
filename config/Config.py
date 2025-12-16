@@ -22,7 +22,7 @@ class Config:
     """
 
     # Flask web server settings
-    PORT = int(os.getenv("FLASK_PORT", 5001))
+    PORT = int(os.getenv("FLASK_PORT", 5000))
     DEBUG = os.getenv("FLASK_DEBUG", "False") == "True"  # Production mode by default
     HOST = os.getenv("FLASK_HOST", "0.0.0.0")
 
@@ -30,7 +30,7 @@ class Config:
     POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", 300))  # Seconds between status checks
 
     # Application environment (production or development)
-    ENV = os.getenv("ENV", "production")
+    ENV = os.getenv("ENV", "PROD")
 
 
 class TuyaConfig:
@@ -49,8 +49,11 @@ class TuyaConfig:
     # Target device identifier
     DEVICE_ID = os.getenv("DEVICE_ID")
 
-    # Pulsar WebSocket endpoint (optional - currently using HTTP polling)
+    # Pulsar WebSocket endpoint for real-time monitoring
     TUYA_PULSAR_ENDPOINT = os.getenv("TUYA_PULSAR_ENDPOINT")
+
+    # Pulsar topic: "PROD" or "TEST" (default: PROD)
+    TUYA_TOPIC = os.getenv("TUYA_TOPIC", "PROD").upper()
 
     @classmethod
     def validate(cls):

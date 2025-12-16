@@ -72,7 +72,7 @@ You need to create secrets in each namespace. **NEVER commit actual secrets to G
 
 ```bash
 # Development
-kubectl create secret generic door-sensor-secrets \
+kubectl create secret generic door-sensor-generic-secret \
   --namespace=development \
   --from-literal=TUYA_ACCESS_ID='your_access_id' \
   --from-literal=TUYA_ACCESS_SECRET='your_access_secret' \
@@ -82,10 +82,21 @@ kubectl create secret generic door-sensor-secrets \
   --from-literal=WA_API_URL='http://whatsapp-service:3000/send/message' \
   --from-literal=WA_API_USER='admin' \
   --from-literal=WA_API_PASSWORD='your_password' \
-  --from-literal=WA_GROUP_ID='your_group_id@g.us'
+  --from-literal=WA_GROUP_ID='your_group_id@g.us' \
+  --from-literal=FLASK_HOST='0.0.0.0' \
+  --from-literal=FLASK_PORT='5000' \
+  --from-literal=FLASK_DEBUG='False' \
+  --from-literal=WA_MESSAGE_DOOR_OPENED='JEBED SERVER DOOR IS OPEN - Room accessed' \
+  --from-literal=WA_MESSAGE_DOOR_CLOSED='JEBED SERVER DOOR IS CLOSED - Room secured' \
+  --from-literal=WA_MESSAGE_SENSOR_INITIALIZED='SENSOR IS WORKING - Monitoring started' \
+  --from-literal=WA_IS_FORWARDED='false' \
+  --from-literal=WA_DURATION='0' \
+  --from-literal=TUYA_TOPIC='TEST' \
+  --from-literal=LOG_LEVEL='INFO' \
+  --from-literal=POLL_INTERVAL='3000'
 
 # Staging
-kubectl create secret generic door-sensor-secrets \
+kubectl create secret generic door-sensor-generic-secret \
   --namespace=staging \
   --from-literal=TUYA_ACCESS_ID='your_access_id' \
   --from-literal=TUYA_ACCESS_SECRET='your_access_secret' \
@@ -95,10 +106,21 @@ kubectl create secret generic door-sensor-secrets \
   --from-literal=WA_API_URL='http://whatsapp-service:3000/send/message' \
   --from-literal=WA_API_USER='admin' \
   --from-literal=WA_API_PASSWORD='your_password' \
-  --from-literal=WA_GROUP_ID='your_group_id@g.us'
+  --from-literal=WA_GROUP_ID='your_group_id@g.us' \
+  --from-literal=FLASK_HOST='0.0.0.0' \
+  --from-literal=FLASK_PORT='5000' \
+  --from-literal=FLASK_DEBUG='False' \
+  --from-literal=WA_MESSAGE_DOOR_OPENED='JEBED SERVER DOOR IS OPEN - Room accessed' \
+  --from-literal=WA_MESSAGE_DOOR_CLOSED='JEBED SERVER DOOR IS CLOSED - Room secured' \
+  --from-literal=WA_MESSAGE_SENSOR_INITIALIZED='SENSOR IS WORKING - Monitoring started' \
+  --from-literal=WA_IS_FORWARDED='false' \
+  --from-literal=WA_DURATION='0' \
+  --from-literal=TUYA_TOPIC='TEST' \
+  --from-literal=LOG_LEVEL='INFO' \
+  --from-literal=POLL_INTERVAL='3000'
 
 # Production
-kubectl create secret generic door-sensor-secrets \
+kubectl create secret generic door-sensor-generic-secret \
   --namespace=production \
   --from-literal=TUYA_ACCESS_ID='your_access_id' \
   --from-literal=TUYA_ACCESS_SECRET='your_access_secret' \
@@ -108,7 +130,18 @@ kubectl create secret generic door-sensor-secrets \
   --from-literal=WA_API_URL='http://whatsapp-service:3000/send/message' \
   --from-literal=WA_API_USER='admin' \
   --from-literal=WA_API_PASSWORD='your_password' \
-  --from-literal=WA_GROUP_ID='your_group_id@g.us'
+  --from-literal=WA_GROUP_ID='your_group_id@g.us' \
+  --from-literal=FLASK_HOST='0.0.0.0' \
+  --from-literal=FLASK_PORT='5000' \
+  --from-literal=FLASK_DEBUG='False' \
+  --from-literal=WA_MESSAGE_DOOR_OPENED='JEBED SERVER DOOR IS OPEN - Room accessed' \
+  --from-literal=WA_MESSAGE_DOOR_CLOSED='JEBED SERVER DOOR IS CLOSED - Room secured' \
+  --from-literal=WA_MESSAGE_SENSOR_INITIALIZED='SENSOR IS WORKING - Monitoring started' \
+  --from-literal=WA_IS_FORWARDED='false' \
+  --from-literal=WA_DURATION='0' \
+  --from-literal=TUYA_TOPIC='TEST' \
+  --from-literal=LOG_LEVEL='INFO' \
+  --from-literal=POLL_INTERVAL='300'
 ```
 
 #### Option B: Using External Secrets Operator (Recommended for GitOps)
@@ -236,10 +269,10 @@ kubectl logs -f deployment/door-sensor-monitor -n production
 
 ```bash
 # Port-forward to access the service
-kubectl port-forward -n development svc/door-sensor-service 5001:5001
+kubectl port-forward -n development svc/door-sensor-service 5000:5000
 
 # Test health endpoint
-curl http://localhost:5001/health
+curl http://localhost:5000/health
 ```
 
 ### ArgoCD Sync Issues

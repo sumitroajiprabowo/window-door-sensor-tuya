@@ -73,7 +73,7 @@ def start_listener():
     device status updates via WebSocket. It should only be called in
     the main process, not in Flask's reloader process.
 
-    Note: Currently disabled in favor of HTTP polling due to encryption issues.
+    Provides real-time event monitoring with 0-2 second delay and 99%+ quota savings.
     """
     print("\n" + "=" * 60)
     print("Initializing Tuya Listener...")
@@ -120,15 +120,15 @@ if __name__ == "__main__":
     if is_reloader_child or not is_debug:
         logger.info("Starting Door Sensor Monitor...")
 
-        # Use HTTP Polling service as the primary monitoring method
-        # This is more reliable than Pulsar WebSocket for our use case
-        from services.polling_service import door_poller
+        # Use Pulsar WebSocket for real-time monitoring (ACTIVE)
+        # Real-time events with 99%+ quota savings
+        # IMPORTANT: Close Tuya Console Test Channel before running!
+        start_listener()
 
-        door_poller.start()
-
-        # Alternative: Pulsar WebSocket listener (currently disabled)
-        # Uncomment below if Pulsar encryption issues are resolved
-        # start_listener()
+        # Alternative: HTTP Polling (fallback if Pulsar has issues)
+        # Uncomment below to switch back to polling
+        # from services.polling_service import door_poller
+        # door_poller.start()
     else:
         logger.info("Skipping monitor start (parent reloader process)")
 
