@@ -3,17 +3,16 @@
 [![Tests](https://github.com/sumitroajiprabowo/window-door-sensor-tuya/actions/workflows/tests.yml/badge.svg)](https://github.com/sumitroajiprabowo/window-door-sensor-tuya/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/sumitroajiprabowo/window-door-sensor-tuya/branch/main/graph/badge.svg)](https://codecov.io/gh/sumitroajiprabowo/window-door-sensor-tuya)
 [![Docker](https://img.shields.io/docker/v/sumitroajiprabowo/door-sensor-monitor?label=docker&logo=docker)](https://hub.docker.com/r/sumitroajiprabowo/door-sensor-monitor)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
 A Flask-based REST API to monitor Tuya Contact Sensors (Window/Door sensors) with real-time event monitoring and WhatsApp notification integration.
 
 ## Features
 
-- **Flexible Monitoring Options:**
-  - HTTP Polling (free tier compatible, 5-minute intervals)
-  - Pulsar WebSocket (real-time, requires Message Service subscription)
-  - MQTT Event-Driven (requires paid plan, 99.97% more efficient for infrequent events)
+- **Real-time Monitoring:**
+  - **Pulsar WebSocket** (Primary: < 2s latency, 99%+ quota savings)
+  - HTTP Polling (Code available as fallback, disabled by default)
 - Direct WhatsApp notifications on door state changes
 - Battery level monitoring
 - Docker & Docker Compose support
@@ -87,6 +86,8 @@ Edit `.env` with your actual credentials. See `.env.example` for all available o
 - `TUYA_ACCESS_SECRET` - From Tuya IoT Console
 - `TUYA_ENDPOINT` - API endpoint for your region
 - `DEVICE_ID` - Your door sensor device ID
+- `TUYA_PULSAR_ENDPOINT` - WebSocket endpoint for real-time events (e.g., `wss://mqe-sg.iotbing.com:8285/`)
+- `TUYA_TOPIC` - Pulsar topic (`PROD` or `TEST`)
 - `WA_API_URL` - WhatsApp API endpoint
 - `WA_API_USER` - WhatsApp API username
 - `WA_API_PASSWORD` - WhatsApp API password
@@ -104,6 +105,10 @@ Edit `.env` with your actual credentials. See `.env.example` for all available o
 - US East: `https://openapi.tuyaus.com`
 - Europe: `https://openapi.tuyaeu.com`
 - China: `https://openapi.tuyacn.com`
+
+**Optional Flask Configuration:**
+- `FLASK_PORT` - Current port: `5000`
+- `FLASK_DEBUG` - Debug mode (default: `False`)
 
 ### 3. Run Application
 
@@ -124,7 +129,7 @@ Debug Mode: False
 
 2025-12-09 10:30:15 - root - INFO - Configuration validation passed
 2025-12-09 10:30:15 - root - INFO - Starting Door Sensor Monitor...
-2025-12-09 10:30:15 - root - INFO - Starting Flask server on 0.0.0.0:5001
+2025-12-09 10:30:15 - root - INFO - Starting Flask server on 0.0.0.0:5000
 
 [Door Sensor Poller] Starting with interval: 2 seconds
 Monitoring device: your_device_id_here
@@ -261,6 +266,11 @@ See [MQTT_SETUP.md](MQTT_SETUP.md) for complete MQTT implementation guide includ
 - Cost-benefit analysis
 - Migration from polling to MQTT
 
+### New: MQTT OpenHub Implementation (Recommended)
+We have added a new, more robust MQTT implementation using Tuya's OpenHub API. This is now the recommended way to use MQTT since it works better with standard libraries and offers dynamic credential management.
+
+See [MQTT_QUICKSTART.md](MQTT_QUICKSTART.md) for the new guide.
+
 **Recommendation:** If your door opens less than 1x per day and you need instant alerts, MQTT is worth the investment.
 
 ## Pulsar WebSocket Real-Time Monitoring (ACTIVE)
@@ -349,6 +359,9 @@ make clean           # Clean build artifacts
 │   ├── tuya_service.py     # Tuya HTTP API client
 │   ├── tuya_listener.py    # Pulsar WebSocket listener (ACTIVE - real-time monitoring)
 │   ├── polling_service.py  # HTTP polling service (fallback)
+│   ├── mqtt_service.py     # MQTT Service (Base)
+│   ├── mqtt_static_service.py # MQTT Static Service (Legacy)
+│   ├── mqtt_openhub_service.py # MQTT OpenHub Service (New - Recommended)
 │   └── whatsapp_service.py # WhatsApp notification service
 ├── utils/
 │   └── response.py         # Response formatters
@@ -358,11 +371,12 @@ make clean           # Clean build artifacts
 ├── test_connection.py      # Connection test utility
 ├── test_whatsapp.py        # WhatsApp API test utility
 ├── PULSAR_SETUP.md         # Pulsar setup documentation
+├── MQTT_SETUP.md           # MQTT setup documentation (Legacy)
+├── MQTT_QUICKSTART.md      # MQTT OpenHub Quickstart (New)
 ├── Dockerfile              # Docker container definition
 ├── docker-compose.yml      # Docker Compose configuration
 ├── Makefile                # Development automation
-├── .env.example            # Environment variable template
-└── .env                    # Configuration (not in git)
+└── .env.example            # Environment variable template
 ```
 
 ## License

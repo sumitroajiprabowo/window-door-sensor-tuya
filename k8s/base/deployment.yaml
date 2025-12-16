@@ -19,14 +19,14 @@ spec:
         image: sumitroajiprabowo/door-sensor-monitor:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 5001
+        - containerPort: 5000
         env:
         - name: ENV
           value: "development"
         # Inject all secrets as environment variables
         envFrom:
           - secretRef:
-              name: door-sensor-jebed-secrets
+              name: door-sensor-generic-secret
         resources:
           limits:
             memory: "256Mi"
@@ -38,7 +38,7 @@ spec:
         startupProbe:
           httpGet:
             path: /health
-            port: 5001
+            port: 5000
           initialDelaySeconds: 10
           periodSeconds: 5
           failureThreshold: 12  # 10s + (5s * 12) = 70s max startup time
@@ -47,7 +47,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 5001
+            port: 5000
           initialDelaySeconds: 0  # Startup probe handles initial delay
           periodSeconds: 10
           failureThreshold: 3
@@ -56,7 +56,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /health
-            port: 5001
+            port: 5000
           initialDelaySeconds: 0  # Startup probe handles initial delay
           periodSeconds: 10
           failureThreshold: 2

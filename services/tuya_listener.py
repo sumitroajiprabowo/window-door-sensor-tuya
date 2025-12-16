@@ -39,11 +39,14 @@ class TuyaListener:
         self.access_secret = TuyaConfig.ACCESS_SECRET
         self.endpoint = TuyaConfig.TUYA_PULSAR_ENDPOINT
 
+        # Get topic from config (PROD or TEST)
+        # Can be configured via TUYA_TOPIC environment variable
+        topic = TuyaCloudPulsarTopic.PROD if TuyaConfig.TUYA_TOPIC == "PROD" else TuyaCloudPulsarTopic.TEST
+        self.topic_name = TuyaConfig.TUYA_TOPIC
+
         # Initialize Pulsar WebSocket client
-        # Using TEST topic - change to PROD if your Message Service uses production topic
-        # Note: TEST topic works for most Message Service subscriptions
         self.open_pulsar = TuyaOpenPulsar(
-            self.access_id, self.access_secret, self.endpoint, TuyaCloudPulsarTopic.TEST
+            self.access_id, self.access_secret, self.endpoint, topic
         )
         self.open_pulsar.add_message_listener(self.on_message)
 
@@ -219,7 +222,7 @@ class TuyaListener:
         print("Starting Tuya Pulsar Listener...")
         print(f"Endpoint: {self.endpoint}")
         print(f"Monitoring Device: {TuyaConfig.DEVICE_ID}")
-        print(f"Topic: TEST Environment (change to PROD in code if needed)")
+        print(f"Topic: {self.topic_name} Environment")
         print(f"Encryption: ECB Mode")
         print(f"WhatsApp Group: {WhatsAppConfig.GROUP_ID}")
         print(f"WhatsApp API: {WhatsAppConfig.API_URL}")

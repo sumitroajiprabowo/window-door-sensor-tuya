@@ -240,7 +240,7 @@ class TestMainExecution:
     def test_host_and_port_from_config(self, mock_config, mock_env_vars):
         """Test that host and port are read from Config."""
         mock_config.HOST = "0.0.0.0"
-        mock_config.PORT = 5001
+        mock_config.PORT = 5000
 
         from main import Config
 

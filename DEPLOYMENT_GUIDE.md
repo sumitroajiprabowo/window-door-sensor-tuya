@@ -71,7 +71,7 @@
    ```bash
    docker run -d \
      --name door-sensor-monitor \
-     -p 5001:5001 \
+     -p 5000:5000 \
      --env-file .env \
      door-sensor-monitor:latest
    ```
@@ -131,10 +131,10 @@ kubectl create namespace development
 **IMPORTANT**: Never commit secrets to Git!
 
 ```bash
-kubectl create secret generic door-sensor-secrets \
+kubectl create secret generic door-sensor-generic-secret \
   --namespace=development \
-  --from-literal=TUYA_ACCESS_ID='your_tuya_access_id' \
-  --from-literal=TUYA_ACCESS_SECRET='your_tuya_access_secret' \
+    --from-literal=TUYA_ACCESS_ID='your_access_id' \
+  --from-literal=TUYA_ACCESS_SECRET='your_access_secret' \
   --from-literal=TUYA_ENDPOINT='https://openapi-sg.iotbing.com' \
   --from-literal=TUYA_PULSAR_ENDPOINT='wss://mqe-sg.iotbing.com:8285/' \
   --from-literal=DEVICE_ID='your_device_id' \
@@ -142,10 +142,17 @@ kubectl create secret generic door-sensor-secrets \
   --from-literal=WA_API_USER='admin' \
   --from-literal=WA_API_PASSWORD='your_password' \
   --from-literal=WA_GROUP_ID='your_group_id@g.us' \
-  --from-literal=FLASK_PORT='5001' \
-  --from-literal=FLASK_DEBUG='False' \
   --from-literal=FLASK_HOST='0.0.0.0' \
-  --from-literal=POLL_INTERVAL='2'
+  --from-literal=FLASK_PORT='5000' \
+  --from-literal=FLASK_DEBUG='False' \
+  --from-literal=WA_MESSAGE_DOOR_OPENED='JEBED SERVER DOOR IS OPEN - Room accessed' \
+  --from-literal=WA_MESSAGE_DOOR_CLOSED='JEBED SERVER DOOR IS CLOSED - Room secured' \
+  --from-literal=WA_MESSAGE_SENSOR_INITIALIZED='SENSOR IS WORKING - Monitoring started' \
+  --from-literal=WA_IS_FORWARDED='false' \
+  --from-literal=WA_DURATION='0' \
+  --from-literal=TUYA_TOPIC='TEST' \
+  --from-literal=LOG_LEVEL='INFO' \
+  --from-literal=POLL_INTERVAL='300'
 ```
 
 #### 3. Deploy Application
@@ -178,13 +185,13 @@ kubectl logs -f deployment/door-sensor-monitor -n development
 kubectl get svc -n development
 
 # Port forward to test locally
-kubectl port-forward -n development svc/door-sensor-service 5001:5001
+kubectl port-forward -n development svc/door-sensor-service 5000:5000
 ```
 
 #### 5. Test Health Endpoint
 
 ```bash
-curl http://localhost:5001/health
+curl http://localhost:5000/health
 ```
 
 Expected response:
@@ -420,7 +427,7 @@ spec:
           name: production
     ports:
     - protocol: TCP
-      port: 5001
+      port: 5000
   egress:
   - to:
     - namespaceSelector: {}
@@ -458,7 +465,7 @@ spec:
           service:
             name: door-sensor-service
             port:
-              number: 5001
+              number: 5000
 ```
 
 ### 8. Backup & Disaster Recovery
@@ -539,7 +546,7 @@ kubectl get events -n <namespace> --sort-by='.lastTimestamp'
 **4. Health check failing:**
 ```bash
 # Test health endpoint
-kubectl exec -it <pod-name> -n <namespace> -- curl localhost:5001/health
+kubectl exec -it <pod-name> -n <namespace> -- curl localhost:5000/health
 
 # Check readiness/liveness probes
 kubectl describe pod <pod-name> -n <namespace>
@@ -587,8 +594,8 @@ argocd app rollback door-sensor-monitor-production <revision-number>
 ## Support & Monitoring
 
 ### Health Checks
-- Health endpoint: `http://service:5001/health`
-- Device status: `http://service:5001/device/status`
+- Health endpoint: `http://service:5000/health`
+- Device status: `http://service:5000/device/status`
 
 ### Metrics to Monitor
 - Pod CPU/Memory usage
