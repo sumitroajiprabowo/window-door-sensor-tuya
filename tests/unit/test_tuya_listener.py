@@ -51,7 +51,9 @@ class TestTuyaListener:
                 "bizCode": "devicePropertyMessage",
                 "bizData": {
                     "devId": "test_device_123",
-                    "properties": [{"code": "doorcontact_state", "value": True, "time": 1234567890}],
+                    "properties": [
+                        {"code": "doorcontact_state", "value": True, "time": 1234567890}
+                    ],
                 },
                 "ts": 1234567890,
             }
@@ -68,7 +70,9 @@ class TestTuyaListener:
                 "bizCode": "devicePropertyMessage",
                 "bizData": {
                     "devId": "test_device_123",
-                    "properties": [{"code": "doorcontact_state", "value": False, "time": 1234567890}],
+                    "properties": [
+                        {"code": "doorcontact_state", "value": False, "time": 1234567890}
+                    ],
                 },
                 "ts": 1234567890,
             }
@@ -97,7 +101,11 @@ class TestTuyaListener:
     def test_on_message_protocol_4_format(self, listener, mock_config):
         """Test on_message handles Protocol 4 format."""
         message = json.dumps(
-            {"devId": "test_device_123", "status": [{"code": "doorcontact_state", "value": True, "t": 1234567890}], "t": 1234567890}
+            {
+                "devId": "test_device_123",
+                "status": [{"code": "doorcontact_state", "value": True, "t": 1234567890}],
+                "t": 1234567890,
+            }
         )
 
         with patch("services.tuya_listener.send_door_opened_alert") as mock_alert:
@@ -109,7 +117,10 @@ class TestTuyaListener:
         message = json.dumps(
             {
                 "bizCode": "devicePropertyMessage",
-                "bizData": {"devId": "test_device_123", "properties": [{"code": "battery_percentage", "value": 85}]},
+                "bizData": {
+                    "devId": "test_device_123",
+                    "properties": [{"code": "battery_percentage", "value": 85}],
+                },
             }
         )
 
@@ -141,7 +152,12 @@ class TestTuyaListener:
 
     def test_on_message_no_device_id(self, listener):
         """Test that messages without device ID are skipped."""
-        message = json.dumps({"bizCode": "devicePropertyMessage", "bizData": {"properties": [{"code": "doorcontact_state", "value": True}]}})
+        message = json.dumps(
+            {
+                "bizCode": "devicePropertyMessage",
+                "bizData": {"properties": [{"code": "doorcontact_state", "value": True}]},
+            }
+        )
 
         with patch("services.tuya_listener.send_door_opened_alert") as mock_alert:
             listener.on_message(message)
