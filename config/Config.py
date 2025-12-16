@@ -30,7 +30,7 @@ class Config:
     POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", 300))  # Seconds between status checks
 
     # Application environment (production or development)
-    ENV = os.getenv("ENV", "production")
+    ENV = os.getenv("ENV", "PROD")
 
 
 class TuyaConfig:

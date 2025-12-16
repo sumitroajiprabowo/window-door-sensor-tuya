@@ -95,7 +95,7 @@ class TestConfig:
 
         importlib.reload(config.Config)
 
-        assert config.Config.Config.ENV == "production"
+        assert config.Config.Config.ENV == "PROD"
 
     def test_custom_env(self, mock_env_vars):
         """Test that custom environment from environment variable is used."""

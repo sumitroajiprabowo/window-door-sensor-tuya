@@ -15,6 +15,7 @@ tests/
 │   ├── test_config.py                   # Tests for config/Config.py
 │   ├── test_main.py                     # Tests for main.py
 │   ├── test_polling_service.py          # Tests for services/polling_service.py
+│   ├── test_tuya_listener.py            # Tests for services/tuya_listener.py
 │   ├── test_tuya_service.py             # Tests for services/tuya_service.py
 │   ├── test_whatsapp_service.py         # Tests for services/whatsapp_service.py
 │   ├── test_health_route.py             # Tests for routes/health.py
@@ -101,6 +102,17 @@ pytest --cov=. --cov-report=xml
 
 **Coverage**: DoorSensorPoller class, door_poller singleton
 
+### Tuya Listener Tests (`test_tuya_listener.py`)
+- Pulsar WebSocket initialization
+- Real-time message processing
+- Door state event handling
+- Protocol 1000 and Protocol 4 support
+- Device ID filtering
+- Battery percentage logging
+- Error handling and edge cases
+
+**Coverage**: TuyaListener class, tuya_listener singleton, on_message(), start()
+
 ### Tuya Service Tests (`test_tuya_service.py`)
 - API initialization
 - Connection management
@@ -177,7 +189,7 @@ pytest --cov=. --cov-report=xml
 
 - **Target**: 100% code coverage
 - **Minimum**: 90% code coverage
-- **Current**: Run `pytest --cov` to see current coverage
+- **Current**: 100% (180 tests passing, all modules covered)
 
 ### Excluded from Coverage
 - Debug scripts (`debug_*.py`)

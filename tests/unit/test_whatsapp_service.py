@@ -204,6 +204,66 @@ class TestSendWhatsAppMessage:
 
         assert result is False
 
+    @patch("services.whatsapp_service.requests.post")
+    def test_send_whatsapp_message_with_is_forwarded_true(self, mock_post, monkeypatch):
+        """Test that payload includes is_forwarded when configured."""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_post.return_value = mock_response
+
+        # Set IS_FORWARDED to True
+        monkeypatch.setenv("WA_IS_FORWARDED", "true")
+        monkeypatch.setenv("WA_API_URL", "https://api.whatsapp.test/send")
+        monkeypatch.setenv("WA_API_USER", "test_user")
+        monkeypatch.setenv("WA_API_PASSWORD", "test_password")
+        monkeypatch.setenv("WA_GROUP_ID", "test_group_id")
+
+        import importlib
+        import config.Config as config_module
+        import services.whatsapp_service as whatsapp_module
+
+        importlib.reload(config_module)
+        importlib.reload(whatsapp_module)
+
+        send_whatsapp_message = whatsapp_module.send_whatsapp_message
+
+        send_whatsapp_message("Test message")
+
+        call_kwargs = mock_post.call_args[1]
+        payload = call_kwargs["json"]
+        assert "is_forwarded" in payload
+        assert payload["is_forwarded"] is True
+
+    @patch("services.whatsapp_service.requests.post")
+    def test_send_whatsapp_message_with_duration(self, mock_post, monkeypatch):
+        """Test that payload includes duration when configured."""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_post.return_value = mock_response
+
+        # Set DURATION to non-zero value
+        monkeypatch.setenv("WA_DURATION", "30")
+        monkeypatch.setenv("WA_API_URL", "https://api.whatsapp.test/send")
+        monkeypatch.setenv("WA_API_USER", "test_user")
+        monkeypatch.setenv("WA_API_PASSWORD", "test_password")
+        monkeypatch.setenv("WA_GROUP_ID", "test_group_id")
+
+        import importlib
+        import config.Config as config_module
+        import services.whatsapp_service as whatsapp_module
+
+        importlib.reload(config_module)
+        importlib.reload(whatsapp_module)
+
+        send_whatsapp_message = whatsapp_module.send_whatsapp_message
+
+        send_whatsapp_message("Test message")
+
+        call_kwargs = mock_post.call_args[1]
+        payload = call_kwargs["json"]
+        assert "duration" in payload
+        assert payload["duration"] == 30
+
 
 class TestSendDoorOpenedAlert:
     """Test cases for send_door_opened_alert function."""

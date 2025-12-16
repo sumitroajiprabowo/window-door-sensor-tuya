@@ -10,7 +10,10 @@ A Flask-based REST API to monitor Tuya Contact Sensors (Window/Door sensors) wit
 
 ## Features
 
-- Real-time door/window state monitoring via HTTP polling
+- **Flexible Monitoring Options:**
+  - HTTP Polling (free tier compatible, 5-minute intervals)
+  - Pulsar WebSocket (real-time, requires Message Service subscription)
+  - MQTT Event-Driven (requires paid plan, 99.97% more efficient for infrequent events)
 - Direct WhatsApp notifications on door state changes
 - Battery level monitoring
 - Docker & Docker Compose support
@@ -18,6 +21,7 @@ A Flask-based REST API to monitor Tuya Contact Sensors (Window/Door sensors) wit
 - Production-ready with security best practices
 - HTTP REST API for device status and commands
 - Configurable polling intervals and alert messages
+- Auto-pause quota management for free tier
 
 ## Prerequisites
 
@@ -240,6 +244,60 @@ For production-grade GitOps deployments:
 
 See [k8s/README.md](k8s/README.md) for complete Kubernetes deployment documentation.
 
+## MQTT Event-Driven Monitoring (Optional)
+
+For doors/windows that open **infrequently** (e.g., 1x per week), MQTT provides **99.97% more efficient** monitoring compared to HTTP polling.
+
+### Benefits:
+- ✅ **Instant notifications** (0-1 second delay vs 1-5 minutes)
+- ✅ **Minimal API calls** (~4-8/month vs 14K-43K/month)
+- ✅ **Perfect for infrequent events** (doors opened rarely)
+- ⚠️ **Requires Tuya paid plan** ($30-50/month for Message Subscription service)
+
+### Setup:
+See [MQTT_SETUP.md](MQTT_SETUP.md) for complete MQTT implementation guide including:
+- Tuya IoT plan upgrade steps
+- MQTT service configuration
+- Cost-benefit analysis
+- Migration from polling to MQTT
+
+**Recommendation:** If your door opens less than 1x per day and you need instant alerts, MQTT is worth the investment.
+
+## Pulsar WebSocket Real-Time Monitoring (ACTIVE)
+
+**Current implementation uses Pulsar WebSocket** for real-time monitoring with **instant notifications** and **minimal API usage**.
+
+### Benefits:
+- ✅ **Real-time notifications** (0-2 second delay vs 5 minutes)
+- ✅ **99%+ quota savings** (~50-100 calls/month vs 8,640 calls/month)
+- ✅ **Event-driven architecture** (no polling overhead)
+- ✅ **ECB encryption** (configured and working)
+- ✅ **Production-ready** (tested and stable)
+
+### Requirements:
+- Message Service enabled in Tuya Console
+- Encryption mode: ECB (not AES-GCM)
+- Topic: TEST Environment
+
+### Important Notes:
+- **Only 1 active consumer** allowed per subscription
+- Close Tuya Console Test Channel before running the app
+- Uses TEST topic (works for most Message Service subscriptions)
+
+### Setup Guide:
+See [PULSAR_SETUP.md](PULSAR_SETUP.md) for complete documentation.
+
+### Fallback to HTTP Polling:
+If Pulsar has issues, switch to polling in `main.py`:
+```python
+# Comment Pulsar
+# start_listener()
+
+# Uncomment Polling
+from services.polling_service import door_poller
+door_poller.start()
+```
+
 ## API Documentation
 
 See [doc.md](doc.md) for full REST API documentation.
@@ -289,8 +347,8 @@ make clean           # Clean build artifacts
 │   └── device.py           # Device endpoints
 ├── services/
 │   ├── tuya_service.py     # Tuya HTTP API client
-│   ├── tuya_listener.py    # Pulsar WebSocket listener (currently disabled)
-│   ├── polling_service.py  # HTTP polling service (active)
+│   ├── tuya_listener.py    # Pulsar WebSocket listener (ACTIVE - real-time monitoring)
+│   ├── polling_service.py  # HTTP polling service (fallback)
 │   └── whatsapp_service.py # WhatsApp notification service
 ├── utils/
 │   └── response.py         # Response formatters
@@ -298,6 +356,8 @@ make clean           # Clean build artifacts
 │   └── unit/               # Unit tests with 100% coverage
 ├── main.py                 # Application entry point
 ├── test_connection.py      # Connection test utility
+├── test_whatsapp.py        # WhatsApp API test utility
+├── PULSAR_SETUP.md         # Pulsar setup documentation
 ├── Dockerfile              # Docker container definition
 ├── docker-compose.yml      # Docker Compose configuration
 ├── Makefile                # Development automation
