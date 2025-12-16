@@ -41,13 +41,15 @@ class TuyaListener:
 
         # Get topic from config (PROD or TEST)
         # Can be configured via TUYA_TOPIC environment variable
-        topic = TuyaCloudPulsarTopic.PROD if TuyaConfig.TUYA_TOPIC == "PROD" else TuyaCloudPulsarTopic.TEST
+        topic = (
+            TuyaCloudPulsarTopic.PROD
+            if TuyaConfig.TUYA_TOPIC == "PROD"
+            else TuyaCloudPulsarTopic.TEST
+        )
         self.topic_name = TuyaConfig.TUYA_TOPIC
 
         # Initialize Pulsar WebSocket client
-        self.open_pulsar = TuyaOpenPulsar(
-            self.access_id, self.access_secret, self.endpoint, topic
-        )
+        self.open_pulsar = TuyaOpenPulsar(self.access_id, self.access_secret, self.endpoint, topic)
         self.open_pulsar.add_message_listener(self.on_message)
 
         # Store endpoint for error logging
