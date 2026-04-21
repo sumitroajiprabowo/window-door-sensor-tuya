@@ -1,7 +1,7 @@
 Flask==3.0.0
 flask-cors==6.0.0
 tuya-connector-python==0.1.2
-python-dotenv==1.0.0
+python-dotenv==1.2.2
 requests==2.32.4
 paho-mqtt==2.1.0
 # paho-mqtt: MQTT client for event-driven monitoring
